@@ -1,7 +1,6 @@
 # spyware
 
----
-## Desenvolvimneto:
+## Desenvolvimento:
 * Foi usado Python 3.8 como linguagem base;
 * Fooram usado bibliotecas auxiliares para extração dos dados (Keyboard, getmac, psutil, base64, io e pyscreenshot);
 * Para salvar os dados foi usado uma API, desenvolvida por mim e hospedada na Heroku;
