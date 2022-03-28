@@ -2,7 +2,7 @@
 
 ## Desenvolvimento:
 * Foi usado Python 3.8 como linguagem base;
-* Fooram usado bibliotecas auxiliares para extração dos dados (Keyboard, getmac, psutil, base64, io e pyscreenshot);
+* Foram usado bibliotecas auxiliares para extração dos dados (Keyboard, getmac, psutil, base64, io e pyscreenshot);
 * Para salvar os dados foi usado uma API, desenvolvida por mim e hospedada na Heroku;
 * Para o envio dos dados foi usada a bilioteca requests e para a serialização foi usada a biblioteca json;
 
