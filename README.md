@@ -17,6 +17,13 @@
 <br>Link: https://spyware-api.herokuapp.com/
 * Documentação da API:
 <br>Link: https://spyware-api.herokuapp.com/swagger-ui/index.html
+* Repositório no GitHub:
+<br>Link: https://github.com/DarlanNoetzold/spyware-API
+
+---
+## Remote-Analyser
+* Repositório no GitHub:
+<br>Link: https://github.com/DarlanNoetzold/Remote-Analyser
 
 ---
 ⭐️ From [DarlanNoetzold](https://github.com/DarlanNoetzold)
