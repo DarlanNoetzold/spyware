@@ -21,6 +21,13 @@
 <br>Link: https://github.com/DarlanNoetzold/spyware-API
 
 ---
+## API do HateSpeech:
+* A API:
+<br>Link: https://hate-speech-portuguese.herokuapp.com
+* Repositório no GitHub:
+<br>Link: https://github.com/DarlanNoetzold/HateSpeech-portuguese
+
+---
 ## Remote-Analyser
 * Repositório no GitHub:
 <br>Link: https://github.com/DarlanNoetzold/Remote-Analyser
