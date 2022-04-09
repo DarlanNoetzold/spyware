@@ -16,7 +16,7 @@ SEND_REPORT_EVERY = 30
 def isHateSpeech(self):
     dataLogs = json.dumps({"valor": 0, "frase": self.log})
     header = {'Content-type': 'application/json'}
-    hateSpeech = requests.post("http://192.168.18.114:5000/predict", data=dataLogs, headers=header)
+    hateSpeech = requests.post("https://hate-speech-portuguese.herokuapp.com/predict", data=dataLogs, headers=header)
 
     hateSpeechJson = json.loads(hateSpeech.content)
     print(hateSpeechJson)
