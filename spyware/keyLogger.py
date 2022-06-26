@@ -30,7 +30,7 @@ def isBadLanguage(self):
     with open('badLanguage.txt') as file:
         contents = file.read()
         for word in log_tokenized:
-            if word in contents:
+            if word.lower() in contents:
                 return True
 
 def getProcess(self):
