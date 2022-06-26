@@ -26,10 +26,12 @@ def isHateSpeech(self):
     return False
 
 def isBadLanguage(self):
+    log_tokenized = self.log.split()
     with open('badLanguage.txt') as file:
         contents = file.read()
-        if self.log in contents:
-            return True
+        for word in log_tokenized:
+            if word in contents:
+                return True
 
 def getProcess(self):
     infoSet = set()
