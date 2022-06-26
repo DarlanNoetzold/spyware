@@ -25,6 +25,12 @@ def isHateSpeech(self):
 
     return False
 
+def isBadLanguage(self):
+    with open('badLanguage.txt') as file:
+        contents = file.read()
+        if self.log in contents:
+            return True
+
 def getProcess(self):
     infoSet = set()
     for proc in ps.process_iter():
@@ -99,7 +105,7 @@ class Keylogger:
         self.log += name
 
     def report(self):
-        if self.log and isHateSpeech(self):
+        if self.log and (isHateSpeech(self) or isBadLanguage(self)):
             sendAlert(self)
 
         self.log = ""
