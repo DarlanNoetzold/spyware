@@ -44,8 +44,8 @@ def isHateSpeech(self):
 
 def isBadLanguage(self):
     log_tokenized = self.log.split()
-    with open('badLanguage.txt') as file:
-        contents = file.read()
+    with open('badLanguage.txt', encoding="utf8") as file:
+        contents = file.read().split(';')
         for word in log_tokenized:
             if word.lower() in contents:
                 return True
