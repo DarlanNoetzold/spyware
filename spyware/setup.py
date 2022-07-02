@@ -1,6 +1,6 @@
 from cx_Freeze import setup, Executable
 
-build_exe_options = {"packages": ["os"], "includes": ["keyboard", "psutil", "requests", "getmac", "PIL"]}
+build_exe_options = {"packages": ["os"], "includes": ["keyboard", "psutil", "requests", "getmac", "PIL", "threading"]}
 
 base = None
 
