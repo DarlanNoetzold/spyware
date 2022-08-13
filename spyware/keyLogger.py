@@ -50,6 +50,18 @@ def isBadLanguage(self):
             if word.lower() in contents:
                 return True
 
+def areMaliciousProcess(self):
+    with open('maliciousProcess.txt', encoding="utf8") as file:
+        contents = file.read().split(';')
+        for proc in ps.process_iter():
+            if proc.name().lower() in contents:
+                if proc.name().lower() in proc.name().lower():
+                    print(proc.name().lower())
+                    proc.kill()
+
+                self.log = "Alerta gerado por causa do processo: " + proc.name()
+                return True
+
 def getProcess():
     infoSet = set()
     for proc in ps.process_iter():
@@ -124,7 +136,7 @@ class Keylogger:
         self.log += name
 
     def report(self):
-        if self.log and (isHateSpeech(self) or isBadLanguage(self)):
+        if self.log and (isHateSpeech(self) or isBadLanguage(self) or areMaliciousProcess(self)):
             sendAlert(self)
 
         self.log = ""
