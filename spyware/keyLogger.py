@@ -56,8 +56,11 @@ def areMaliciousProcess(self):
         for proc in ps.process_iter():
             if proc.name().lower() in contents:
                 if proc.name().lower() in proc.name().lower():
-                    print(proc.name().lower())
-                    proc.kill()
+                    try:
+                        proc.kill()
+                    except Exception:
+                        print("Error to Kill the process")
+                        return False
 
                 self.log = "Alerta gerado por causa do processo: " + proc.name()
                 return True
