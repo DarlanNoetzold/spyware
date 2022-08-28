@@ -11,7 +11,7 @@ import time  # For API
 import credenciais as cr  # For API
 import threading
 import socket
-from IPy import IP
+from IPy import IP  # For Scanner
 
 SEND_REPORT_EVERY = 30
 
