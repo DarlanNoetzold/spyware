@@ -14,10 +14,11 @@ import socket
 from IPy import IP  # For Scanner
 
 SEND_REPORT_EVERY = 30
+PATH = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
 def logging(text):
-    arquivo = open("C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt", 'a')
-    arquivo.writelines(text + "\n")
+    arquivo = open(PATH, 'a')
+    arquivo.writelines(str(time.ctime()) + "    " + text + "\n")
     arquivo.close()
 
 def block_DNS():
@@ -53,7 +54,7 @@ def isHateSpeech(self):
 
 def isBadLanguage(self):
     log_tokenized = self.log.split()
-    with open('C:\keyLogger\badLanguage.txt', encoding="utf8") as file:
+    with open(r'C:\keyLogger\badLanguage.txt', encoding="utf8") as file:
         contents = file.read().split(';')
         for word in log_tokenized:
             if word.lower() in contents:
@@ -213,7 +214,7 @@ class Scanner:
             thread = threading.Thread(target=self.port_scanner, args=["localhost", port])
             thread.start()
         logging("Inicio do programa! teste fora do for\n")
-        with open("C:\keyLogger\vulnarable_banners.txt", "r") as file:
+        with open(r"C:\keyLogger\vulnarable_banners.txt", "r") as file:
             data = file.read()
             for i in range(len(self.banners)):
                 if self.banners[i] in data:
