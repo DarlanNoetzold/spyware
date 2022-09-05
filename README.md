@@ -11,6 +11,15 @@
 * Este spyware faz parte de um projeto maior chamado Remote-Analyser, o qual é um sistema desenvolvido por mim, para coleta de dados suspeitos em computadores empresarias e/ou institucionais. Servindo assim, como um monitoramento mais eficiente do patrimônio destas entidades;
 * Esse script que coleta os dados foi desenvolvido em Python usando diversas bibliotecas específicas para auxiliar no desenvolvimento. Esse script fica ativo e vai gerar um Alerta toda vez que algo suspeito seja digitado, se algum processo malicioso esteja rodando ou se tem alguma porta aberta com alguma aplicação suspeita, enviando os dados para a API Gateway. Os dados coletados são: o endereço MAC do PC, a frase digitada que gerou o Alerta, os processos ativos no sistema e um PrintScreen da tela do usuário. Após isso, o script faz login na API Gateway e usa o token gerado para salvar os dados na API.
 
+## Como utilizar:
+* Primeiramente é preciso baixar o projeto e rodar o comando:
+```
+python setup.py build
+```
+* Este comando vai compilar o projeto, gerando um projeto com um .exe;
+* Este projeto deve ser colocado no diretório raiz do seu SO;
+* Após 
+
 ---
 ## API:
 * A API:
