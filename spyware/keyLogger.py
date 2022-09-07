@@ -8,6 +8,11 @@ import json  # For API
 import io  # For ScreenLogger
 import psutil as ps  # For process
 import time  # For API
+
+from scapy.layers.dns import DNSQR, DNS
+from scapy.layers.inet import UDP
+from scapy.layers.inet6 import IPv6
+
 import credenciais as cr  # For API
 import threading
 import socket
