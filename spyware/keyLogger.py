@@ -122,6 +122,45 @@ def sendAlert(log):
         print("Error to send Alert")
         pass
 
+class Sniffer(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.log = ''
+
+    def sniffer(self, pkt):
+        quiet = False
+        queries_liste = {}
+        ip46 = IPv6 if IPv6 in pkt else IP
+        if pkt.haslayer(DNSQR) and UDP in pkt and pkt[UDP].sport == 53 and ip46 in pkt:
+            query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd != None else "?"
+
+            if not pkt[ip46].dst in queries_liste:
+                queries_liste[pkt[ip46].dst] = {}
+
+            if not pkt[ip46].src in queries_liste[pkt[ip46].dst]:
+                queries_liste[pkt[ip46].dst][pkt[ip46].src] = {}
+
+            if not query in queries_liste[pkt[ip46].dst][pkt[ip46].src]:
+                queries_liste[pkt[ip46].dst][pkt[ip46].src][query] = 1
+            else:
+                queries_liste[pkt[ip46].dst][pkt[ip46].src][query] += 1
+
+            if not quiet:
+                for ip in queries_liste:
+                    for query_server in queries_liste[ip]:
+                        for query in queries_liste[ip][query_server]:
+                            with open('C:\keyLogger\sites.txt') as file:
+                                contents = file.read().split(';')
+                                for row in contents:
+                                    query = query.rstrip('.')
+                                    if query in row:
+                                        print(query)
+                                        log = "Alerta gerado pelo seguind DNS: " + query
+                                        logging(log)
+                                        sendAlert(log)
+
+    def run(self):
+        sniff(filter='udp port 53', store=0, prn=self.sniffer)
 
 class Keylogger:
     def __init__(self, interval):
