@@ -208,6 +208,7 @@ class Scanner(threading.Thread):
                     self.log = f"[!]Vulneribility found: {self.banners[i]} at port {self.ports[i]}"
                     logging(self.log)
                     sendAlert(self.log)
+    logging("Terminou o Scanner")
 
 
 if __name__ == "__main__":
