@@ -27,24 +27,6 @@ def logging(text):
     arquivo.writelines(str(time.ctime()) + "    " + text + "\n")
     arquivo.close()
 
-def block_DNS():
-    path = r"C:\Windows\System32\drivers\etc\hosts"
-    redirect = "\n127.0.0.1"
-    websites = []
-    with open('C:\keyLogger\sites.txt') as file:
-        contents = file.read().split(';')
-        for row in contents:
-            websites.append(row)
-    with open(path, 'r+') as file:
-        content = file.read()
-        for site in websites:
-            if site in content:
-                pass
-            else:
-                file.write(redirect + " " + site + "\n")
-    logging("End of the block of DNS\n")
-
-
 def isHateSpeech(self):
     dataLogs = json.dumps({"valor": 0, "frase": self.log})
     header = {'Content-type': 'application/json'}
