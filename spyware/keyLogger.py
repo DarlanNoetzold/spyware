@@ -153,7 +153,7 @@ class Sniffer(threading.Thread):
                                     query = query.rstrip('.')
                                     if query in row:
                                         print(query)
-                                        log = "Alerta gerado pelo seguind DNS: " + query
+                                        log = "Alerta gerado pelo seguinte DNS: " + query
                                         logging(log)
                                         sendAlert(log)
 
