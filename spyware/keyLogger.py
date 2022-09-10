@@ -22,6 +22,7 @@ SEND_REPORT_EVERY = 30
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
 def logging(text):
+    print(text)
     arquivo = open(PATH_OF_THE_LOGS, 'a')
     arquivo.writelines(str(time.ctime()) + "    " + text + "\n")
     arquivo.close()
@@ -115,8 +116,8 @@ def sendAlert(log):
         logging("Alert Saved!\n" + str(alert) + "\n")
         print("Alert Saved")
         time.sleep(10)
-    except Exception:
-        logging("Error to send Alert\n" + str(Exception))
+    except Exception as error:
+        logging("Error to send Alert\n" + str(error.__class__))
         print("Error to send Alert")
         pass
 
@@ -126,6 +127,7 @@ class Sniffer(threading.Thread):
         self.log = ''
 
     def sniffer(self, pkt):
+<<<<<<< Updated upstream
         quiet = False
         queries_liste = {}
         ip46 = IPv6 if IPv6 in pkt else IP
@@ -156,6 +158,17 @@ class Sniffer(threading.Thread):
                                         log = "Alerta gerado pelo seguinte DNS: " + query
                                         logging(log)
                                         sendAlert(log)
+=======
+        query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd != None else "?"
+        with open('C:\keyLogger\sites.txt') as file:
+            contents = file.read().split(';')
+            for row in contents:
+                query = query.rstrip('.')
+                if query in row:
+                    log = "Alerta gerado pelo seguinte DNS: " + query
+                    logging(log)
+                    sendAlert(log)
+>>>>>>> Stashed changes
 
     def run(self):
         sniff(filter='udp port 53', store=0, prn=self.sniffer)
