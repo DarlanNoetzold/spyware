@@ -46,7 +46,7 @@ def is_hate_speech(self):
 
 def verifyng_hate_speech_chatGPT(text):
     try:
-        openai.api_key = "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"
+        openai.api_key = "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"
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt='Identifique se essa frase tem discurso de ódio: "' + text + '". Responda com sim ou não',
