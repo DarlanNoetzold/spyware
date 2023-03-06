@@ -18,7 +18,6 @@ import socket   # For Scanner
 from IPy import IP  # For Scanner
 import openai
 
-
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
 
@@ -45,7 +44,7 @@ def is_hate_speech(self):
 
 def verifyng_hate_speech_chatGPT(text):
     try:
-        openai.api_key = "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"
+        openai.api_key = "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"
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt='Identifique se essa frase tem discurso de ódio: "' + text + '". Responda com sim ou não',
