@@ -122,23 +122,32 @@ def do_login():
 
 def send_alert(log):
     headers = do_login()
-
+    has_error = False
     try:
         dataImage = json.dumps({"id": 0, "productImg": log, "base64Img": get_image()}, sort_keys=True, indent=4)
         image = requests.post("http://localhost:8091/image/save", dataImage,
                               headers=headers)
         imageJson = json.loads(image.content)
+    except Exception as error:
+        logging("Error to send Image\n" + str(error))
+        print("Error to send Image")
+        has_error = True
 
-        dataAlert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": get_process()},
+    try:
+        if has_error:
+            data_alert = json.dumps({"pcId": str(gma()), "processos": get_process()},
+                                   sort_keys=True, indent=4)
+        else:
+            data_alert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": get_process()},
                                sort_keys=True, indent=4)
-        alert = requests.post("http://localhost:8091/alert/save", dataAlert, headers=headers)
+        alert = requests.post("http://localhost:8091/alert/save", data_alert, headers=headers)
 
         print(alert)
         logging("Alert Saved!\n" + str(alert) + "\n")
         print("Alert Saved")
         time.sleep(10)
     except Exception as error:
-        logging("Error to send Alert\n" + str(error.__class__))
+        logging("Error to send Alert\n" + str(error))
         print("Error to send Alert")
         pass
 
@@ -146,22 +155,29 @@ def send_alert(log):
 class Sniffer(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.log = ''
+        self.blocked_sites = self.read_blocked_sites()
+        self.logs = []
+
+    def read_blocked_sites(self):
+        with open('C:\keyLogger\sites.txt') as file:
+            return file.read().split(';')
 
     def sniffer(self, pkt):
-        query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd != None else "?"
-        with open('C:\keyLogger\sites.txt') as file:
-            contents = file.read().split(';')
-            for row in contents:
-                query = query.rstrip('.')
+        if DNS in pkt:
+            query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd != None else "?"
+            query = query.rstrip('.')
+            for row in self.blocked_sites:
                 if query in row:
                     log = "Alerta gerado pelo seguinte DNS: " + query
-                    logging(log)
+                    self.logs.append(log)
+                    if len(self.logs) > 100:
+                        self.logs.pop(0)
                     send_alert(log)
 
     def run(self):
         logging("Iniciou do sniffer!")
-        sniff(filter='udp port 53', store=0, prn=self.sniffer)
+        sniff(filter='udp port 53 or (src port 80 or src port 443 or src port 8080)', prn=self.sniffer, store=0, count=0)
+
 
 
 import keyboard
