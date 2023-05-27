@@ -12,6 +12,8 @@ import threading    # For paralelism
 import socket   # For Scanner
 from IPy import IP  # For Scanner
 import openai
+import pyshark
+
 
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
@@ -153,28 +155,42 @@ class Sniffer(threading.Thread):
         self.blocked_sites = set(self.read_blocked_sites())
         self.logs = []
         self.queries = set()
+        self.packet_count = 0
+        self.max_packet_count = 1000  # Número máximo de pacotes a capturar
+        self.capture_interval = 0.01  # Intervalo de captura em segundos
+        self.capture_active = True
+        self.lock = threading.Lock()
 
     def read_blocked_sites(self):
         with open('C:\keyLogger\sites.txt') as file:
-            return [line.strip() for line in file]
+            return {line.strip() for line in file}
 
     def sniffer(self, pkt):
         if DNS in pkt and pkt.haslayer(Raw):
             src_port = pkt.sport
-            if src_port in [80, 443, 8080]:
+            if src_port in {80, 443, 8080}:
                 query = pkt[DNS].qd.qname.decode("utf-8") if pkt[DNS].qd is not None else "?"
                 query = query.rstrip('.')
                 if query in self.blocked_sites and query not in self.queries:
                     log = "Alerta gerado pelo seguinte DNS: " + query
-                    self.logs.append(log)
-                    if len(self.logs) > 100:
-                        self.logs.pop(0)
-                    send_alert(log)
-                    self.queries.add(query)
+                    with self.lock:
+                        self.logs.append(log)
+                        if len(self.logs) > 100:
+                            self.logs = self.logs[-100:]  # Mantém apenas os últimos 100 logs
+                        send_alert(log)
+                        self.queries.add(query)
 
     def run(self):
         logging("Iniciou do sniffer!")
-        sniff(filter='udp port 53', prn=self.sniffer, store=0, count=0)
+        sniff(filter="(udp port 53) or (tcp port 80) or (tcp port 443) or (tcp port 8080)",
+              prn=self.process_packet, count=self.max_packet_count, timeout=self.capture_interval)
+
+    def process_packet(self, pkt):
+        self.sniffer(pkt)
+        with self.lock:
+            self.packet_count += 1
+            if self.packet_count >= self.max_packet_count:
+                self.capture_active = False
 
 import keyboard
 
