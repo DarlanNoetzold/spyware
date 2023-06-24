@@ -301,7 +301,7 @@ def update_aux_data():
     headers = do_login()
     logging("Iniciou a atualização dos dados auxiliars!")
     try:
-        badLanguages = requests.get("http://localhost:8091/badLanguage/getAll", headers=headers).json()
+        badLanguages = requests.get("http://localhost:8091/language/getAll", headers=headers).json()
         with open(r"C:\keyLogger\badLanguage.txt", "w") as file:
             for badLanguage in badLanguages:
                 file.write(badLanguage.get('word') + ";")
