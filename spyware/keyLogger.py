@@ -17,6 +17,8 @@ import pyshark
 
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
+alert_json = {}
+
 
 def logging(text):
     print(text)
@@ -26,12 +28,13 @@ def logging(text):
 
 
 def is_hate_speech(self):
-    dataLogs = json.dumps({"valor": 0, "frase": self.log})
+    dataLogs = json.dumps({"value": 0, "frase": self.log})
     header = {'Content-type': 'application/json'}
     hateSpeech = requests.post("http://127.0.0.1:5000/predict", data=dataLogs, headers=header)
 
     hateSpeechJson = json.loads(hateSpeech.content)
-    if hateSpeechJson[0]['valor'] == 1:
+    alert_json = hateSpeechJson[0]
+    if hateSpeechJson[0]['value'] == 1:
         logging("Geração de alerta por discurso de ódio: " + self.log)
         logging(str(hateSpeechJson))
         return True
@@ -108,9 +111,32 @@ def get_image():
 
 
 def do_login():
-    dataUser = json.dumps({"login": cr.login, "password": cr.password})
-    token = requests.post("http://localhost:8091/login", dataUser).text
-    logging("Login realizado, token:" + token + "\n")
+    client = requests.Session()
+    username = "admin"
+    password = "admin"
+
+    form_data = {
+        "username": username,
+        "password": password,
+        "grant_type": "password",
+    }
+
+    response = client.post("http://localhost:8180/realms/quarkus1/protocol/openid-connect/token",
+                           auth=("backend-service", "secret"),
+                           headers={"Content-Type": "application/x-www-form-urlencoded"},
+                           data=form_data)
+
+    if response.status_code != 200:
+        error_message = f"Falha ao fazer login. Status: {response.status_code}"
+        raise Exception(error_message)
+
+    print(response.status_code)
+
+    response_json = response.json()
+    token = response_json.get("access_token")
+    if not token:
+        logging("Token não encontrado no JSON")
+
     return {
         'Authorization': 'Bearer ' + token,
         'Content-type': 'application/json'
@@ -119,25 +145,11 @@ def do_login():
 
 def send_alert(log):
     headers = do_login()
-    has_error = False
-    try:
-        dataImage = json.dumps({"id": 0, "productImg": log, "base64Img": get_image()}, sort_keys=True, indent=4)
-        image = requests.post("http://localhost:8091/image/save", dataImage,
-                              headers=headers)
-        imageJson = json.loads(image.content)
-    except Exception as error:
-        logging("Error to send Image\n" + str(error))
-        print("Error to send Image")
-        has_error = True
 
     try:
-        if has_error:
-            data_alert = json.dumps({"pcId": str(gma()), "processos": get_process()},
-                                   sort_keys=True, indent=4)
-        else:
-            data_alert = json.dumps({"pcId": str(gma()), "imagem": {"id": imageJson['id']}, "processos": get_process()},
+        data_alert = json.dumps({"pcId": str(gma()), "image": get_image(), "processos": get_process(), "models": alert_json['model'], "language": alert_json['language']},
                                sort_keys=True, indent=4)
-        alert = requests.post("http://localhost:8091/alert/save", data_alert, headers=headers)
+        alert = requests.post("http://localhost:9000/alert", data_alert, headers=headers)
 
         print(alert)
         logging("Alert Saved!\n" + str(alert) + "\n")
@@ -301,22 +313,22 @@ def update_aux_data():
     headers = do_login()
     logging("Iniciou a atualização dos dados auxiliars!")
     try:
-        badLanguages = requests.get("http://localhost:8091/language/getAll", headers=headers).json()
+        badLanguages = requests.get("http://localhost:9000/language?page=1&size=1000&sortBy=id", headers=headers).json()
         with open(r"C:\keyLogger\badLanguage.txt", "w") as file:
             for badLanguage in badLanguages:
                 file.write(badLanguage.get('word') + ";")
 
-        ports = requests.get("http://localhost:8091/port/getAll", headers=headers).json()
+        ports = requests.get("http://localhost:9000/port?page=1&size=1000&sortBy=id", headers=headers).json()
         with open(r"C:\keyLogger\vulnarable_banners.txt", "w") as file:
             for port in ports:
                 file.write(port.get('vulnarableBanners') + ";")
 
-        processes = requests.get("http://localhost:8091/process/getAll", headers=headers).json()
+        processes = requests.get("http://localhost:9000/process?page=1&size=1000&sortBy=id", headers=headers).json()
         with open(r"C:\keyLogger\maliciousProcess.txt", "w") as file:
             for process in processes:
                 file.write(process.get('nameExe') + ";")
 
-        websites = requests.get("http://localhost:8091/website/getAll", headers=headers).json()
+        websites = requests.get("http://localhost:9000/website?page=1&size=1000&sortBy=id", headers=headers).json()
         with open(r"C:\keyLogger\sites.txt", "w") as file:
             for website in websites:
                 file.write(website.get('url') + ";")
